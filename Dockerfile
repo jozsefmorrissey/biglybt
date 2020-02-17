@@ -16,11 +16,13 @@ RUN apt-get update && \
       libwebkitgtk-3.0-0 \
       openjdk-11-jre-headless \
       openvpn \
-      tree && \
+      tree \
+      gnupg && \
     sed -e 's/^assistive_technologies/#assistive_technologies/' \
       -i /etc/java-11-openjdk/accessibility.properties && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
+
 
 # ------------------------------------------------------------------------------
 # Install BiglyBT
@@ -28,6 +30,14 @@ RUN wget -q https://files.biglybt.com/installer/BiglyBT_Installer.sh \
       -O /app/BiglyBT_Installer.sh && chmod +x /app/BiglyBT_Installer.sh && \
     USER="root" app_java_home="/usr/lib/jvm/java-11-openjdk-amd64/" /app/BiglyBT_Installer.sh -q && \
     rm /app/BiglyBT_Installer.sh
+
+# ------------------------------------------------------------------------------
+# Install Sonarr
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0xA236C58F409091A18ACA53CBEBFF6B99D9B78493 && \
+    echo "deb http://apt.sonarr.tv/ master main" | sudo tee /etc/apt/sources.list.d/sonarr.list && \
+    sudo apt update && \
+    sudo apt install -y nzbdrone
+
 
 # ------------------------------------------------------------------------------
 # Provide default BiglyBT config
