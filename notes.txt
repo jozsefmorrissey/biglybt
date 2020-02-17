@@ -12,3 +12,25 @@ echo "deb http://apt.sonarr.tv/ master main" | sudo tee /etc/apt/sources.list.d/
 sudo apt update
 sudo apt install nzbdrone
 mono --debug /opt/NzbDrone/NzbDrone.exe
+
+
+docker exec $(docker run -d \
+  -v  /srv/docker/biglybt/data:/root/.biglybt \
+  -v /srv/docker/biglybt/in:/in \
+  -v /srv/docker/biglybt/out:/out \
+  -p 8989:8989 \
+  -p 127.0.0.1:5901:5901 \
+  sonarr) \
+  mono --debug /opt/NzbDrone/NzbDrone.exe
+
+
+
+  docker run -d --cap-add=NET_ADMIN --device /dev/net/tun \
+  --sysctl net.ipv6.conf.all.disable_ipv6=0 \
+  -e OVPNCFG='myconnection.ovpn' \
+  -e OVPNSLEEPTIME='9' \
+  -e LOGFILE='mylog' \
+  -v /srv/docker/biglybt/in:/in \
+  -v /srv/docker/biglybt/out:/out \
+  -v /srv/docker/biglybt/config:/config \
+  -p 127.0.0.1:5901:5901 fullaxx/biglybt
